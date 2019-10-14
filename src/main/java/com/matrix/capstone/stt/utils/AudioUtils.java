@@ -2,13 +2,11 @@ package com.matrix.capstone.stt.utils;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.net.*;
-import java.nio.file.*;
 
 public class AudioUtils {
 
 
-    public static void mp3ToWav(InputStream mp3Data) throws UnsupportedAudioFileException, IOException {
+    public static int mp3ToWav(InputStream mp3Data, String fileName) throws UnsupportedAudioFileException, IOException {
         // open stream
         AudioInputStream mp3Stream = AudioSystem.getAudioInputStream(mp3Data);
         AudioFormat sourceFormat = mp3Stream.getFormat();
@@ -23,7 +21,8 @@ public class AudioUtils {
         // create stream that delivers the desired format
         AudioInputStream converted = AudioSystem.getAudioInputStream(convertFormat, mp3Stream);
         // write stream into a file with file format wav
-        AudioSystem.write(converted, AudioFileFormat.Type.WAVE, new File("C:\\temp\\out.wav"));
+        int fileSize = AudioSystem.write(converted, AudioFileFormat.Type.WAVE, new File(fileName));
+        return fileSize;
     }
 
 }

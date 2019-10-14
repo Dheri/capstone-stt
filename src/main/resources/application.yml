@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: matrix-stt
+    deepSpeech-dir: /deepspeech
+    deepSpeech-exe-path: /home/ubuntu/capstone/runtime/startup.sh
+    backend-url: http://capstone.parteek.in:8080
+  servlet:
+    multipart:
+      maxRequestSize: 256MB
+      maxFileSize: 256MB

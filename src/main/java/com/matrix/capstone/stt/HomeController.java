@@ -3,6 +3,8 @@ package com.matrix.capstone.stt;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +25,8 @@ import java.util.Map;
  */
 @RestController
 public class HomeController {
+    @Autowired
+    private Environment environment;
     private static final Logger log = LogManager.getLogger(HomeController.class);
     private static int fileCount = 0;
 
@@ -42,7 +46,7 @@ public class HomeController {
         log.info("processed at {}", map.get("time"));
 
         synchronized (this) {
-            new S2TWorker(file.getInputStream(), Integer.parseInt(narrationId)).run();
+            new S2TWorker(file.getInputStream(), narrationId, environment).run();
         }
         return map;
 
