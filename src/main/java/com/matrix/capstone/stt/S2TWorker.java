@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.matrix.capstone.stt;
 
@@ -33,7 +33,7 @@ public class S2TWorker implements Runnable {
 	private   String textPrefix = "tr_txt";
 
 	private   String deepSpeechExePath;
-	
+
 	private InputStream dataStream;
 	private String fileIdentifier;
 
@@ -56,7 +56,15 @@ public class S2TWorker implements Runnable {
 			commands.add("sudo");
 			commands.add(deepSpeechExePath);
 			commands.add(audioFilePath.toString());
-
+//			commands.add("sudo");
+//			commands.add("/home/ubuntu/capstone/DeepSpeech/deepspeech");
+//			commands.add("--model /home/ubuntu/capstone/DeepSpeech/models/output_graph.pbmm");
+//			commands.add("--alphabet /home/ubuntu/capstone/DeepSpeech/models/alphabet.txt");
+//			commands.add("--lm /home/ubuntu/capstone/DeepSpeech/models/lm.binary");
+//			commands.add("--trie /home/ubuntu/capstone/DeepSpeech/models/trie");
+//			commands.add("--audio ".concat(audioFilePath.toString()));
+//			commands.add(String.format("$1 >> %s_txt", audioFilePath.toString()));
+//			commands.add(String.format(" &>> %s_err", audioFilePath.toString()));
 
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.command(commands);
@@ -68,14 +76,21 @@ public class S2TWorker implements Runnable {
 			pb.redirectError(new File(trxDirPath.toFile(), "errs" + fileIdentifier));
 			pb.redirectOutput(Redirect.appendTo(outputText));
 			Process p = pb.start();
+			long pid = p.pid();
+			log.info("pid no wait".concat(String.valueOf(pid)));
+
 			p.waitFor();
-            log.debug("translation ended");
+ 			log.info("pid waitFor".concat(String.valueOf(pid)));
+
+			log.info("translation ended");
+
+
             new File(trxDirPath.resolve(audioFileName.concat("_txt")).toString());
 
             new BackendUtils(environment).callback(null,fileIdentifier.replace("_",""));
-			log.debug("callback ended");
+			log.info("callback ended");
 			boolean wavFileDeleted = new File(audioFilePath.toString()).delete();
-            log.debug("wavFileDeleted ? ".concat(String.valueOf(wavFileDeleted)));
+            log.info("wavFileDeleted ? ".concat(String.valueOf(wavFileDeleted)));
 
 
         } catch (IOException | InterruptedException | UnsupportedAudioFileException e) {
@@ -91,7 +106,6 @@ public class S2TWorker implements Runnable {
 		this.environment = environment;
         this.deepSpeechDir = environment.getProperty("spring.application.deepSpeech-dir");
         this.deepSpeechExePath = environment.getProperty("spring.application.deepSpeech-exe-path");
-
     }
 
 }

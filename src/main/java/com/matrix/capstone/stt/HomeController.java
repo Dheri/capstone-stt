@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,14 +36,14 @@ public class HomeController {
     }
 
     @PostMapping("/validateNarration")
-    public Map<String,String> handleFileUpload(@RequestParam("file") MultipartFile file,  @RequestParam("narrationId") String narrationId ) throws IOException {
+    public Map<String, String> handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("narrationId") String narrationId) throws IOException {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("status", "success");
         map.put("time", new Date().toString());
         log.info("processed at {}", map.get("time"));
-
+        InputStream inputStream = new BufferedInputStream(file.getInputStream());
         synchronized (this) {
-            new S2TWorker(file.getInputStream(), narrationId, environment).run();
+            new S2TWorker(inputStream, narrationId, environment).run();
         }
         return map;
 

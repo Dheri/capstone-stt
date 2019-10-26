@@ -1,13 +1,20 @@
 package com.matrix.capstone.stt.utils;
 
+import com.matrix.capstone.stt.HomeController;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.sound.sampled.*;
 import java.io.*;
 
 public class AudioUtils {
 
+    private static final Logger log = LogManager.getLogger(AudioUtils.class);
 
     public static int mp3ToWav(InputStream mp3Data, String fileName) throws UnsupportedAudioFileException, IOException {
-        // open stream
+
+        log.info(AudioSystem.getAudioFileFormat(mp3Data));
+
         AudioInputStream mp3Stream = AudioSystem.getAudioInputStream(mp3Data);
         AudioFormat sourceFormat = mp3Stream.getFormat();
         // create audio format object for the desired stream/audio format
